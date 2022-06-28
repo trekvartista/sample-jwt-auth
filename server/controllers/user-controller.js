@@ -1,3 +1,4 @@
+const { User } = require("../models");
 const userService = require("../service/user-service");
 
 class UserController {
@@ -43,7 +44,8 @@ class UserController {
 	}
 	async getUsers(req, res, next) {
 		try {
-			res.json(['hello', '123'])
+			const users = await User.findAll()
+			return res.json(users)
 		} catch (e) {
 			next(e);
 		}

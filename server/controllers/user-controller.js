@@ -30,7 +30,11 @@ class UserController {
 	}
 	async activate(req, res, next) {
 		try {
+			const activationLink = req.params.link;
+			await userService.activate(activationLink);
 
+			// express allows to redirect from a server to client link
+			return res.redirect(process.env.CLIENT_URL)
 		} catch (e) {
 			next(e);
 		}

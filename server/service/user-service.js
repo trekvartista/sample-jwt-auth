@@ -30,6 +30,17 @@ class UserService {
 
 		return { user: userDto, ...tokens }
     }
+
+	async activate(activationLink) {
+		const user = await User.findOne({ where: { activationLink } })
+
+		if (!user) {
+			throw new Error("User not found, activation link is incorrect")
+		}
+
+		user.isActivated = true;
+		await user.save()
+	}
 }
 
 module.exports = new UserService();

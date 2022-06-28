@@ -4,18 +4,18 @@ class MailService {
 
 	constructor() {
 		this.transporter = nodemailer.createTransport({
-			host: process.env.MAIL_HOST,
-			port: process.env.MAIL_PORT,
+			host: process.env.SMTP_HOST,
+			port: process.env.SMTP_PORT,
 			secure: false,
 			auth: {
-				user: process.env.MAIL_USER,
-				pass: process.env.MAIL_PASSWORD
+				user: process.env.SMTP_USER,
+				pass: process.env.SMTP_PASSWORD
 			}
 		})
 	}
 	async sendActivationMail(email, activationLink) {
 		await this.transporter.sendMail({
-			from: process.env.MAIL_USER,
+			from: process.env.SMTP_USER,
 			to: email,
 			subject: process.env.API_URL + ' account activation',
 			html: `<p>Please click on the following link to activate your account:</p>`

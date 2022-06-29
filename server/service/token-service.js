@@ -35,6 +35,24 @@ class TokenService {
 		return token;
 	}
 
+	async validateAccessToken(token) {
+		try {
+			const decoded = jwt.verify(token, process.env.ACCESS_SECRET_KEY);
+			return decoded;
+		} catch (e) {
+			return null;
+		}
+	}
+
+	async validateRefreshToken(token) {
+		try {
+			const decoded = jwt.verify(token, process.env.REFRESH_SECRET_KEY);
+			return decoded;
+		} catch (e) {
+			return null;
+		}
+	}
+
 	async deleteToken(refreshToken) {
 		const token = await Token.destroy({ where: { refreshToken } });
 		if (!token) {

@@ -4,6 +4,7 @@ const { User } = require("../models/index.js");
 const mailService = require("./mail-service");
 const tokenService = require("./token-service");
 const UserDto = require("../dto/user-dto");
+const ApiError = require("../exceptions/api-error.js");
 
 class UserService {
 	
@@ -11,7 +12,8 @@ class UserService {
 
         const candidate = await User.findOne({ where: { email } })
         if (candidate) {
-            throw new Error("User with this email already exists")
+			throw ApiError.BadRequest("User with this email already exists")
+            // throw new Error("User with this email already exists")
         }
 
         const hashPassword = await bcrypt.hash(password, 17)
@@ -35,7 +37,7 @@ class UserService {
 		const user = await User.findOne({ where: { activationLink } })
 
 		if (!user) {
-			throw new Error("User not found, activation link is incorrect")
+			throw ApiError.BadRequest("User not found, activation link is incorrect")
 		}
 
 		user.isActivated = true;

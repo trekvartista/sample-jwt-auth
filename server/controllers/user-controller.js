@@ -1,15 +1,21 @@
 const { User } = require("../models");
 const userService = require("../service/user-service");
+const { validationResult } = require('express-validator');
+const ApiError = require("../exceptions/api-error");
 
 class UserController {
 	async register(req, res, next) {
 		try {
-			const { email, password } = req.body;
-			const userData = await userService.register(email, password);
+			const errors = validationResult(req)
+			if (!errors.isEmpty()) {
+				return next(ApiError.BadRequest("Validation error", errors.array()))
+			}
+			const { email, password } = req.body
+			const userData = await userService.register(email, password)
 		
-			res.cookie('refreshToken', userData.refreshToken, {maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true});
+			res.cookie('refreshToken', userData.refreshToken, {maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true})
 
-			return res.json(userData);
+			return res.json(userData)
 		} catch (e) {
 			next(e);
 		}
@@ -30,8 +36,8 @@ class UserController {
 	}
 	async activate(req, res, next) {
 		try {
-			const activationLink = req.params.link;
-			await userService.activate(activationLink);
+			const activationLink = req.params.link
+			await userService.activate(activationLink)
 
 			// express allows to redirect from a server to client link
 			return res.redirect(process.env.CLIENT_URL)

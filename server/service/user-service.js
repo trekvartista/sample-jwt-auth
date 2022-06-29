@@ -26,12 +26,32 @@ class UserService {
         });
 		await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`)
 
-		const userDto = new UserDto(user);
+		const userDto = new UserDto(user)
 		const tokens = tokenService.generateTokens({ ...userDto })
 		await tokenService.saveToken(tokens.refreshToken, user.id)
 
 		return { user: userDto, ...tokens }
     }
+
+	async login(email, password) {
+
+		const user = await User.findOne({ where: { email } })
+
+		if (!user) {
+			throw ApiError.BadRequest("User with this email does not exist")
+		}
+
+		const comparePassword = await bcrypt.compare(password, user.password)
+		if(!comparePassword) {
+			throw ApiError.BadRequest("Password is incorrect")
+		}
+
+		const userDto = new UserDto(user)
+		const tokens = tokenService.generateTokens({ ...userDto })
+		await tokenService.saveToken(tokens.refreshToken, user.id)
+
+		return { user: userDto, ...tokens }
+	}
 
 	async activate(activationLink) {
 		const user = await User.findOne({ where: { activationLink } })

@@ -25,6 +25,24 @@ class TokenService {
 			console.log(e);
 		}
 	}
+
+	async getToken(refreshToken) {
+		const token = await Token.findOne({ where: { refreshToken } });
+		if (!token) {
+			return null;
+		}
+
+		return token;
+	}
+
+	async deleteToken(refreshToken) {
+		const token = await Token.destroy({ where: { refreshToken } });
+		if (!token) {
+			return null;
+		}
+
+		return token;
+	}
 }
 
 module.exports = new TokenService();

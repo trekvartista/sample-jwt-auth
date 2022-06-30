@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export const API_URL = "http://localhost:5000";
+export const API_URL = "http://localhost:5000/api";
 
 const api = axios.create({
     withCredentials: true, // to attach cookies to every request
-    baseURL: "http://localhost:5000/api",
+    baseURL: API_URL,
 });
 
 api.interceptors.response.use((config) => {

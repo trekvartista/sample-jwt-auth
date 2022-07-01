@@ -5,17 +5,20 @@ import HomePage from "./components/HomePage";
 import LoginForm from "./components/LoginForm";
 import Navbar from "./components/Navbar";
 import { AuthResponse } from "./models/response/AuthResponse";
+import loading from "./assets/loading-buffering.gif";
 
 export const Context = createContext({});
 
 const App: FC = () => {
     const [user, setUser] = useState({
         data: {},
-        isAuth: true,
+        isAuth: false,
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     const checkAuth = async () => {
         try {
+            setIsLoading(true);
             const response = await axios.get<AuthResponse>(
                 API_URL + "/refresh",
                 {
@@ -27,6 +30,8 @@ const App: FC = () => {
             setUser({ data: response.data.user, isAuth: true });
         } catch (e) {
             console.log(e);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -36,12 +41,29 @@ const App: FC = () => {
         }
     }, []);
 
-    return (
-        <Context.Provider value={{ user: { user, setUser } }}>
-            <div className="text-center">
-                <Navbar />
-                <div>{user.isAuth ? <HomePage /> : <LoginForm />}</div>
+    useEffect(() => {
+        console.log('isAuth:', user.isAuth);
+    }, [user]);
+
+    if (isLoading) {
+        return (
+            <div className="w-full h-screen flex flex-col">
+                <img className="m-auto w-12" src={loading} alt="loading..." />
             </div>
+        );
+    }
+
+    return (
+        <Context.Provider value={{ user, setUser }}>
+			{ !user.isAuth
+				?
+					<LoginForm />
+				:
+					<div className="text-center">
+						<Navbar />
+						<HomePage />
+					</div>
+			}
         </Context.Provider>
     );
 };

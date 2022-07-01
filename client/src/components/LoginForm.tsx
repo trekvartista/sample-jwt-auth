@@ -1,25 +1,38 @@
 import { FC, useContext, useState } from "react";
 import { login } from "../api/auth";
 import { Context } from "../App";
+import loading from "../assets/loading-buffering.gif";
 
 const LoginForm: FC = () => {
 
-    const { user } = useContext(Context as any);
+    const {user, setUser} = useContext(Context as any);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async () => {
-        // console.log(email, password)
+
         try {
+			setIsLoading(true);
         	const response = await login(email, password)
         	localStorage.setItem('token', response.data.accessToken)
 
-			user.setUser({data: response.data.user, isAuth: true})
+			setUser({data: response.data.user, isAuth: true})
         } catch (e) {
         	console.log(e)
-        }
+        } finally {
+			setIsLoading(false);
+		}
     };
+
+	if (isLoading) {
+		return (
+            <div className="w-full h-screen flex flex-col">
+                <img className="m-auto w-12" src={loading} alt="loading..." />
+            </div>
+        );
+	}
 
     return (
         <div className="w-full h-screen flex flex-col ">

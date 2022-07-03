@@ -10,7 +10,7 @@ const HomePage = () => {
 		const response = await getUsers()
 
 		setUsers(response.data)
-		console.log(response)
+		// console.log(response)
 	}
 
 	return (

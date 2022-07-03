@@ -1,11 +1,14 @@
 import { FC, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { logout } from '../api/auth';
 import { Context } from '../App';
 import { IUser } from '../models/IUser';
+import { LOGIN_ROUTE } from '../routes/consts';
 
 const Navbar: FC = () => {
 
 	const {user, setUser} = useContext(Context as any);
+	const navigate = useNavigate()
 
 	const handleLogout = async() => {
 
@@ -13,8 +16,8 @@ const Navbar: FC = () => {
 
 		localStorage.removeItem('token');
 		setUser({data: {} as IUser, isAuth: false});
+		navigate(LOGIN_ROUTE);
 	}
-
 
 	return (
 		<div className='py-4 px-12 absolute w-full'>

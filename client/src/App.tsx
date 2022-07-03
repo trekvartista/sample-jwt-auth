@@ -7,6 +7,9 @@ import Navbar from "./components/Navbar";
 import { AuthResponse } from "./models/response/AuthResponse";
 import loading from "./assets/loading-buffering.gif";
 import RegisterForm from "./components/RegisterForm";
+import AppRouter from "./components/AppRouter";
+import { LOGIN_ROUTE, REFRESH_ROUTE } from "./routes/consts";
+import { useNavigate } from "react-router-dom";
 
 export const Context = createContext({});
 
@@ -16,12 +19,13 @@ const App: FC = () => {
         isAuth: false,
     });
     const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate()
 
     const checkAuth = async () => {
         try {
             setIsLoading(true);
             const response = await axios.get<AuthResponse>(
-                API_URL + "/refresh",
+                API_URL + REFRESH_ROUTE,
                 {
                     withCredentials: true,
                 }
@@ -40,11 +44,11 @@ const App: FC = () => {
         if (localStorage.getItem("token")) {
             checkAuth();
         }
+		else {
+			navigate(LOGIN_ROUTE)
+		}
     }, []);
 
-    useEffect(() => {
-        console.log('isAuth:', user.isAuth);
-    }, [user]);
 
     if (isLoading) {
         return (
@@ -56,15 +60,12 @@ const App: FC = () => {
 
     return (
         <Context.Provider value={{ user, setUser }}>
-			{ !user.isAuth
-				?
-					<RegisterForm />
-				:
-					<div className="text-center">
-						<Navbar />
-						<HomePage />
-					</div>
-			}
+            {
+                <div className="text-center">
+                    <Navbar />
+                    <AppRouter />
+                </div>
+            }
         </Context.Provider>
     );
 };

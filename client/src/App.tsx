@@ -6,6 +6,7 @@ import LoginForm from "./components/LoginForm";
 import Navbar from "./components/Navbar";
 import { AuthResponse } from "./models/response/AuthResponse";
 import loading from "./assets/loading-buffering.gif";
+import RegisterForm from "./components/RegisterForm";
 
 export const Context = createContext({});
 
@@ -57,7 +58,7 @@ const App: FC = () => {
         <Context.Provider value={{ user, setUser }}>
 			{ !user.isAuth
 				?
-					<LoginForm />
+					<RegisterForm />
 				:
 					<div className="text-center">
 						<Navbar />

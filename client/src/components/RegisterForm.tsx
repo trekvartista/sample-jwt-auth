@@ -8,6 +8,7 @@ const RegisterForm: FC = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [repeatPassword, setRepeatPassword] = useState("");
 
     const handleSubmit = async () => {
         // console.log(email, password)
@@ -40,11 +41,19 @@ const RegisterForm: FC = () => {
                     placeholder="Password..."
                     className="p-2"
                 />
+                <input
+                    type="password"
+                    value={repeatPassword}
+                    onChange={(e) => setRepeatPassword(e.target.value)}
+                    autoComplete="off"
+                    placeholder="Repeat password..."
+                    className="p-2"
+                />
                 <button
                     onClick={handleSubmit}
                     className="p-2 font-bold text-gray-700 border rounded-md hover:scale-95 transition-all"
                 >
-                    Login
+                    Register
                 </button>
             </div>
         </div>
